@@ -1,4 +1,6 @@
-﻿using RiverRopes.Infrastructure.Gameplay.StatesMachine;
+﻿using RiverRopes.Infrastructure.Game.Factory;
+using RiverRopes.Infrastructure.Gameplay.StatesMachine;
+using RiverRopes.Services.SlowMotion;
 using Zenject;
 
 namespace RiverRopes.Infrastructure.Installers
@@ -8,12 +10,25 @@ namespace RiverRopes.Infrastructure.Installers
         public override void InstallBindings()
         {
             Container
+                .BindInterfacesAndSelfTo<SlowMotionService>()
+                .AsSingle();
+
+            Container
+                .BindInterfacesAndSelfTo<LevelsFactory>()
+                .AsSingle();
+
+            Container
+                .BindInterfacesAndSelfTo<GameFactory>()
+                .AsSingle();
+
+            Container
                .Bind<GameplayStatesFactory>()
                .AsSingle();
 
             Container
                 .BindInterfacesAndSelfTo<GameplayStateMachine>()
                 .AsSingle();
+
 
         }
     }

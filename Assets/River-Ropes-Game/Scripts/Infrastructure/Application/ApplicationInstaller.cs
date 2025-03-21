@@ -1,5 +1,6 @@
 ﻿using RiverRopes.Infrastructure.Application.StatesMachine;
 using RiverRopes.Services.AssetProvider;
+using RiverRopes.Services.ConfigsProvider;
 using Zenject;
 
 namespace RiverRopes.Infrastructure.Application
@@ -18,7 +19,12 @@ namespace RiverRopes.Infrastructure.Application
 
             Container
                 .Bind<IAssetProvider>()
-                .To<ResourcesAssetProvider>()
+                .To<AddressablesAssetProvider>()
+                .AsSingle();
+
+            Container
+                .Bind<IConfigsProvider>()
+                .To<ConfigsProvider>()
                 .AsSingle();
 
             Container

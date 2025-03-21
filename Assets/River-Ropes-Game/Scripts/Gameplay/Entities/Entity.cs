@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace RiverRopes.Gameplay.Entities
 {
     public enum EntityType
@@ -7,7 +9,7 @@ namespace RiverRopes.Gameplay.Entities
         Enemy,
         Trash
     }
-    public abstract class Entity
+    public abstract class Entity : MonoBehaviour
     {
         
     }
@@ -19,7 +21,7 @@ namespace RiverRopes.Gameplay.Entities
     {
 
     }
-    public class Enemy : Entity
+    public class ShootTrigger : MonoBehaviour
     {
 
     }

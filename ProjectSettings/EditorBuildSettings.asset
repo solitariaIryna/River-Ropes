@@ -12,5 +12,6 @@ EditorBuildSettings:
     path: Assets/River-Ropes-Game/Scenes/Game.unity
     guid: 75921a064cf90834e83dcfd1f42af9fa
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 5f06e19d3bce8c749bdec8862b259be2, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
   m_UseUCBPForAssetBundles: 0
