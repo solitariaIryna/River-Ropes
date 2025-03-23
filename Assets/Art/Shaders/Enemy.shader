@@ -16,6 +16,13 @@ Shader "Enemy"
 		_RampThreshold ("Threshold", Range(0.01,1)) = 0.5
 		_RampSmoothing ("Smoothing", Range(0.001,1)) = 0.5
 		[TCP2Separator]
+		
+		[TCP2HeaderHelp(Specular)]
+		[Toggle(TCP2_SPECULAR)] _UseSpecular ("Enable Specular", Float) = 0
+		[TCP2ColorNoAlpha] _SpecularColor ("Specular Color", Color) = (0.5,0.5,0.5,1)
+		_SpecularToonSize ("Toon Size", Range(0,1)) = 0.25
+		_SpecularToonSmoothness ("Toon Smoothness", Range(0.001,0.5)) = 0.05
+		[TCP2Separator]
 
 		[TCP2HeaderHelp(Emission)]
 		[TCP2ColorNoAlpha] [HDR] _Emission ("Emission Color", Color) = (0,0,0,1)
@@ -60,9 +67,19 @@ Shader "Enemy"
 		float _RampSmoothing;
 		fixed4 _HColor;
 		fixed4 _SColor;
+		float _SpecularToonSize;
+		float _SpecularToonSmoothness;
+		fixed4 _SpecularColor;
 		float _RimMin;
 		float _RimMax;
 		fixed4 _RimColor;
+
+		//Specular help functions (from UnityStandardBRDF.cginc)
+		inline float3 SpecSafeNormalize(float3 inVec)
+		{
+			half dp3 = max(0.001f, dot(inVec, inVec));
+			return inVec * rsqrt(dp3);
+		}
 
 		ENDCG
 
@@ -72,6 +89,11 @@ Shader "Enemy"
 
 		#pragma surface surf ToonyColorsCustom vertex:vertex_surface exclude_path:deferred exclude_path:prepass keepalpha nolightmap nofog nolppv
 		#pragma target 3.0
+
+		//================================================================
+		// SHADER KEYWORDS
+
+		#pragma shader_feature_local_fragment TCP2_SPECULAR
 
 		//================================================================
 		// STRUCTS
@@ -121,6 +143,9 @@ Shader "Enemy"
 			float3 __highlightColor;
 			float3 __shadowColor;
 			float __ambientIntensity;
+			float __specularToonSize;
+			float __specularToonSmoothness;
+			float3 __specularColor;
 			float __rimMin;
 			float __rimMax;
 			float3 __rimColor;
@@ -154,6 +179,9 @@ Shader "Enemy"
 			output.__highlightColor = ( _HColor.rgb );
 			output.__shadowColor = ( _SColor.rgb );
 			output.__ambientIntensity = ( 1.0 );
+			output.__specularToonSize = ( _SpecularToonSize );
+			output.__specularToonSmoothness = ( _SpecularToonSmoothness );
+			output.__specularColor = ( _SpecularColor.rgb );
 			output.__rimMin = ( _RimMin );
 			output.__rimMax = ( _RimMax );
 			output.__rimColor = ( _RimColor.rgb );
@@ -227,6 +255,18 @@ Shader "Enemy"
 				color.rgb += ambient;
 			#endif
 
+			half3 halfDir = SpecSafeNormalize(float3(lightDir) + float3(viewDir));
+			
+			#if defined(TCP2_SPECULAR)
+			//Blinn-Phong Specular
+			float ndh = max(0, dot (normal, halfDir));
+			float spec = smoothstep(surface.__specularToonSize + surface.__specularToonSmoothness, surface.__specularToonSize - surface.__specularToonSmoothness,1 - (ndh / (1+surface.__specularToonSmoothness)));
+			spec *= ndl;
+			spec *= atten;
+			
+			//Apply specular
+			color.rgb += spec * lightColor.rgb * surface.__specularColor;
+			#endif
 			// Rim Lighting
 			#if !defined(UNITY_PASS_FORWARDADD)
 			half rim = 1 - surface.ndvRaw;
@@ -262,5 +302,5 @@ Shader "Enemy"
 	CustomEditor "ToonyColorsPro.ShaderGenerator.MaterialInspector_SG2"
 }
 
-/* TCP_DATA u config(ver:"2.9.8";unity:"2021.3.24f1";tmplt:"SG2_Template_Default";features:list["UNITY_5_4","UNITY_5_5","UNITY_5_6","UNITY_2017_1","UNITY_2018_1","UNITY_2018_2","UNITY_2018_3","UNITY_2019_1","UNITY_2019_2","UNITY_2019_3","UNITY_2019_4","UNITY_2020_1","UNITY_2021_1","UNITY_2021_2","EMISSION","RIM"];flags:list[];flags_extra:dict[];keywords:dict[RENDER_TYPE="Opaque",RampTextureDrawer="[TCP2Gradient]",RampTextureLabel="Ramp Texture",SHADER_TARGET="3.0",RIM_LABEL="Rim Lighting"];shaderProperties:list[];customTextures:list[];codeInjection:codeInjection(injectedFiles:list[];mark:False);matLayers:list[]) */
-/* TCP_HASH 26e825e2fa2462b46c9fca6fac52d5a3 */
+/* TCP_DATA u config(ver:"2.9.8";unity:"6000.0.25f1";tmplt:"SG2_Template_Default";features:list["UNITY_5_4","UNITY_5_5","UNITY_5_6","UNITY_2017_1","UNITY_2018_1","UNITY_2018_2","UNITY_2018_3","UNITY_2019_1","UNITY_2019_2","UNITY_2019_3","UNITY_2019_4","UNITY_2020_1","UNITY_2021_1","UNITY_2021_2","EMISSION","RIM","UNITY_2022_2","SPECULAR_SHADER_FEATURE","SPECULAR","SPECULAR_TOON","SPEC_LEGACY"];flags:list[];flags_extra:dict[];keywords:dict[RENDER_TYPE="Opaque",RampTextureDrawer="[TCP2Gradient]",RampTextureLabel="Ramp Texture",SHADER_TARGET="3.0",RIM_LABEL="Rim Lighting"];shaderProperties:list[];customTextures:list[];codeInjection:codeInjection(injectedFiles:list[];mark:False);matLayers:list[]) */
+/* TCP_HASH 5635a508e15f86421d71442cfead0114 */
