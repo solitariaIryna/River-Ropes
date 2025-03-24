@@ -18,5 +18,6 @@ namespace RiverRopes.Services.AssetProvider
         UniTask<T> InstantiateAsync<T>(AssetReference reference, Vector3 position = default, Quaternion rotation = default, Transform parent = null) where T : MonoBehaviour;
         UniTask<T> InstantiateAsync<T>(string key, DiContainer container, Vector3 position = default, Quaternion rotation = default, Transform parent = null) where T : MonoBehaviour;
         UniTask<T> InstantiateAsync<T>(AssetReference reference, DiContainer container, Vector3 position = default, Quaternion rotation = default, Transform parent = null) where T : MonoBehaviour;
+        T Instantiate<T>(T prefab, Vector3 position = default, Quaternion rotation = default, Transform parent = null) where T : Object;
     }
 }

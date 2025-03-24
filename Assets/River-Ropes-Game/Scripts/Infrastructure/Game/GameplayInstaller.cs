@@ -1,5 +1,6 @@
 ﻿using RiverRopes.Infrastructure.Game.Factory;
 using RiverRopes.Infrastructure.Gameplay.StatesMachine;
+using RiverRopes.Services.Cameras;
 using RiverRopes.Services.SlowMotion;
 using Zenject;
 
@@ -11,6 +12,10 @@ namespace RiverRopes.Infrastructure.Installers
         {
             Container
                 .BindInterfacesAndSelfTo<SlowMotionService>()
+                .AsSingle();
+
+            Container
+                .BindInterfacesAndSelfTo<CameraService>()
                 .AsSingle();
 
             Container

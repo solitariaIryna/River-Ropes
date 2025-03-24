@@ -14,6 +14,8 @@ namespace RiverRopes.Services.AssetProvider
         public T Load<T>(string path) where T : Object =>
             Resources.Load<T>(path);
 
+        public T Instantiate<T>(T prefab, Vector3 position = default, Quaternion rotation = default, Transform parent = null) where T : Object =>
+            Object.Instantiate<T>(prefab, position, rotation, parent);
         public async UniTask<T> InstantiateAsync<T>(string key, Vector3 position = default, Quaternion rotation = default, Transform parent = null) where T : MonoBehaviour
         {
             AsyncOperationHandle<GameObject> handle = Addressables.InstantiateAsync(key, position, rotation, parent);
